@@ -3,10 +3,10 @@ import numpy as np
 class ParticleFilter(object):
     def __init__(self, p_particle, next_particle, initial_particles):
         """
-        p_particle: function where p_particle(states, sensor_reading)
-            returns probability of all particles
-        next_particle: function where next_particle(states, prop_param)
-            samples particles at next time step
+        p_particle: function where p_particle(state, sensor_reading)
+            returns probability of particle
+        next_particle: function where next_particle(state, prop_param)
+            samples particle at next time step
         initial_particles: iterable of initial particles
         """
         self.p_particle = np.vectorize(p_particle)
