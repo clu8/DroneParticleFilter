@@ -3,8 +3,15 @@
 import numpy as np
 from particlefilter import ParticleFilter
 
-def get_true_obs(states):
-    return states ** 2
+def get_true_obs(state):
+    if state < 20:
+        return 5
+    elif 20 <= state < 60:
+        return state
+    elif 60 <= state < 80:
+        return 10
+    else:
+        return 20
 
 def p_particle(state, sensor_reading):
     """
@@ -31,13 +38,13 @@ pf = ParticleFilter(
 )
 
 true_state = 2
-for _ in range(50):
-    obs = np.random.normal(get_true_obs(true_state), 5)
-
-    print('Observation: {}'.format(obs))
+while True:
     print('True state: {}'.format(true_state))
     print('Particles: {}'.format(sorted(pf.particles)))
+    print('=========\n')
 
+    obs = np.random.normal(get_true_obs(true_state), 5)
+    print('Observation: {}'.format(obs))
     prop_param = int(input('Enter velocity: '))
     true_state = max(min(true_state + prop_param, 99), 0)
 
