@@ -39,16 +39,17 @@ all_states = list(range(66))
 viz = ParticleFilterVisualization(all_states, get_true_obs, pf.particles,
                                   y_particle=700)
 
-while True:
-    obs = np.random.normal(get_true_obs(true_state), 5)
+with open('testy.txt') as f:
+    for line in f:
+        obs = np.random.normal(get_true_obs(true_state), 5)
 
-    print('True state: {}'.format(true_state))
-    print('Particles: {}'.format(np.round(sorted(pf.particles), 2)))
-    print('=========\n')
-    viz.update(pf.particles, obs, true_state)
+        print('True state: {}'.format(true_state))
+        print('Particles: {}'.format(np.round(sorted(pf.particles), 2)))
+        print('=========\n')
+        viz.update(pf.particles, obs, true_state)
 
-    print('Observation: {}'.format(obs))
-    prop_param = float(input('Enter expected change in state: '))
-    true_state = max(min(true_state + prop_param, 99), 0)
+        print('Observation: {}'.format(obs))
+        prop_param = float(input('Enter expected change in state: '))
+        true_state = max(min(true_state + prop_param, 99), 0)
 
-    pf.observe(obs, prop_param)
+        pf.observe(obs, prop_param)
