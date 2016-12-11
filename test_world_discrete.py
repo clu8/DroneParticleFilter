@@ -28,9 +28,8 @@ def next_particle(state, prop_param):
     Sample new state from Gaussian around new expected location. 
     prop_param: predicted change in state
     """
-    sigma = 1
     expected_state = state + prop_param
-    return int(np.random.normal(expected_state, sigma))
+    return int(np.random.normal(expected_state, prop_param))
 
 n_particles = int(input('Number of particles: '))
 
