@@ -32,7 +32,8 @@ def next_particle(state, prop_param):
     expected_state = state + prop_param
     return int(np.random.normal(expected_state, sigma))
 
-n_particles = 100
+n_particles = int(input('Number of particles: '))
+
 pf = ParticleFilter(
     p_particle,
     next_particle,
