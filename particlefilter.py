@@ -4,7 +4,7 @@ class ParticleFilter(object):
     def __init__(self, p_particle, next_particle, initial_particles):
         """
         p_particle: function where p_particle(state, obs)
-            returns probability of particle
+            returns probability of particle P(obs|state)
         next_particle: function where next_particle(state, prop_param)
             samples particle at next time step
         initial_particles: iterable of initial particles
