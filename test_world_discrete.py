@@ -29,7 +29,7 @@ def next_particle(state, prop_param):
     prop_param: predicted change in state
     """
     expected_state = state + prop_param
-    return int(np.random.normal(expected_state, prop_param))
+    return int(np.random.normal(expected_state, abs(prop_param) ** 0.5))
 
 n_particles = int(input('Number of particles: '))
 
