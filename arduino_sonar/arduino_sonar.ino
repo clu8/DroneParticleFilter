@@ -14,13 +14,13 @@ char buf [100];
 
 #define SONAR_NUM     1 // Number of sensors.
 #define MAX_DISTANCE 255 // Maximum distance (in cm) to ping.
-#define LR_PING_INTERVAL 10 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo; 10 used since LR are opposite ends).
-#define BACK_PING_INTERVAL 33 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
+#define LR_PING_INTERVAL 0 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo; 10 used since LR are opposite ends).
+#define BACK_PING_INTERVAL 0 // Milliseconds between sensor pings (29ms is about the min to avoid cross-sensor echo).
 
 #define FIELD_MAX_DIST 210 // Max distance to subtract from to get x sonar measurement from left sonar
 
 unsigned long pingTimer[SONAR_NUM]; // Holds the times when the next ping should happen for each sensor.
-byte cm[SONAR_NUM];         // Where the ping distances are stored.
+float cm[SONAR_NUM];         // Where the ping distances are stored.
 byte currentSensor = 0;          // Keeps track of which sensor is active.
 
 NewPing sonar[SONAR_NUM] = {     // Sensor object array.
@@ -28,10 +28,13 @@ NewPing sonar[SONAR_NUM] = {     // Sensor object array.
 };
 
 // Running median for median filter (protection from noise), using 10 samples running median
-RunningMedian sonar1samples = RunningMedian(10);
+RunningMedian sonar1samples = RunningMedian(30);
 RunningAverage xRA(100);
 RunningAverage yRA(100);
-
+long lastMillis = 0;
+float velocity = 0;
+float pos = 0;
+float lastPos = 0;
 
 SoftwareSerial bluetoothLink(8, 9);
 
@@ -120,7 +123,7 @@ void loop() {
 
 void echoCheck() { // If ping received, set the sensor distance to array.
   if (sonar[0].check_timer() && sonar[0].ping_result)
-    cm[0] = sonar[0].ping_result / US_ROUNDTRIP_CM;
+    cm[0] = sonar[0].ping_result / ((float)US_ROUNDTRIP_CM);
     sonar1samples.add(cm[0]);
 }
 
@@ -128,12 +131,16 @@ void echoCheck() { // If ping received, set the sensor distance to array.
 byte sonarRequest = 0;
 void oneSensorCycle() { // Sensor ping cycle complete, do something with the results.
       #ifdef DEBUG
-        Serial.print(round(sonar1samples.getMedian()));
+        Serial.print(sonar1samples.getMedian());
         Serial.print(",");
-        Serial.print(xaccel);
+        velocity += (abs(xaccel-0.45) > 0.3? xaccel-0.45:0.0f) * (millis()-lastMillis)/1000.0f;
+        pos += 1 * (millis()-lastMillis)/1000.0f;
+        Serial.print(pos);
+        lastPos = pos;
+        lastMillis = millis();
         Serial.print(",");
         Serial.println(millis());
-
+        
         bluetoothLink.print("1: ");
         bluetoothLink.println(round(sonar1samples.getMedian()));
       #endif
