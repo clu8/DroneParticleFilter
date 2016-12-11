@@ -17,8 +17,8 @@ def p_particle(state, obs):
     """
     Weight using Gaussian kernel
     """
-    # variance = 0.207**2 # empirically tested variance
-    variance = 5 # larger variance to test limits
+    variance = 0.207 ** 2 # empirically tested variance
+    # variance = 5 # larger variance to test limits
     return np.exp(-(get_true_obs(state) - obs) ** 2 / (2 * variance)) \
         if state in environment else 0
 
@@ -28,9 +28,9 @@ def next_particle(state, prop_param):
     prop_param: expected change in feet
     """
     expected_state = state + prop_param * 4
-    # stdev = prop_param * 4 # guesstimate of noise
-    stdev = prop_param * 10 # larger variance to test limits
-    return int(np.round(np.random.normal(expected_state, stdev)))
+    stdev = prop_param * 4 # guesstimate of noise
+    # stdev = prop_param * 30 # larger variance to test limits
+    return min(max(int(np.round(np.random.normal(expected_state, stdev))), 0), 65)
 
 n_particles = int(input('Number of particles: '))
 
@@ -53,7 +53,11 @@ with open('longboard_episode_2.csv') as csvfile:
             print('Particles: {}'.format(np.round(sorted(pf.particles), 2)))
             print('=========\n')
             viz.update(pf.particles, obs)
-            input('Press [enter] to go to next time step')
+            
+            if row_idx % 2000 == 0: # take four snapshots of visualization
+                viz.savefig('plots/longboard_viz_realistic_{}.png'.format(int(row_idx / 2000 + 1)))
+
+            # input('Press [enter] to go to next time step')
 
             prop_param = pos - prev_pos
             print('Observation: {}'.format(obs))

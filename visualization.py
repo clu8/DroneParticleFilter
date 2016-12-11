@@ -35,3 +35,6 @@ class ParticleFilterVisualization(object):
             self.true_state_plt.set_ydata([self.y_particle, self.get_true_obs(true_state)])
 
         self.fig.canvas.draw()
+
+    def savefig(self, filename):
+        plt.savefig(filename)
