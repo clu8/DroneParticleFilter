@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+
 from particlefilter import ParticleFilter
+from visualization import ParticleFilterVisualization
 
 def get_true_obs(state):
     if state < 20:
@@ -41,30 +41,17 @@ pf = ParticleFilter(
 )
 
 all_states = list(range(100))
-true_obs = [get_true_obs(state) for state in all_states]
-fig = plt.figure()
-ax = fig.add_subplot(1, 1, 1)
-env_plt, = ax.plot(all_states, true_obs, lw=5, zorder=1)
-
 true_state = 10
-print(get_true_obs(true_state))
-true_plt, = ax.plot([true_state, true_state], [70, get_true_obs(true_state)], '.-', ms=20, zorder=3)
-
-particles_plt, = ax.plot(pf.particles, [70] * n_particles, '.', ms=20, zorder=2, alpha=0.2)
-
-plt.ylim([0, 80])
-plt.show(block=False)
+viz = ParticleFilterVisualization(all_states, get_true_obs, pf.particles,
+                                  y_particle=70, true_state=true_state)
 
 while True:
     obs = np.random.normal(get_true_obs(true_state), 2)
 
     print('True state: {}'.format(true_state))
-    true_plt.set_xdata([true_state, true_state])
-    true_plt.set_ydata([70, obs])
     print('Particles: {}'.format(sorted(pf.particles)))
-    particles_plt.set_xdata(pf.particles)
     print('=========\n')
-    fig.canvas.draw()
+    viz.update(pf.particles, obs, true_state)
 
     print('Observation: {}'.format(obs))
     prop_param = int(input('Enter expected change in state: '))
