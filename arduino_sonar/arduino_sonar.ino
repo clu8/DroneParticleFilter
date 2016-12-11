@@ -91,6 +91,7 @@ void setup()
   pingTimer[0] = millis() + 75;           // First ping starts at 75ms, gives time for the Arduino to chill before starting.
 
   // calibrateAccelerometer();
+  delay(10000);
 }
 
 byte floatBytes[4];
@@ -104,6 +105,7 @@ void float2Bytes(float val,byte* bytes_array){
   u.float_variable = val;
   // Assign bytes to input array
   memcpy(bytes_array, u.temp_array, 4);
+  
 }
 
 float xaccel;
@@ -134,7 +136,7 @@ void oneSensorCycle() { // Sensor ping cycle complete, do something with the res
         Serial.print(sonar1samples.getMedian());
         Serial.print(",");
         velocity += (abs(xaccel-0.45) > 0.3? xaccel-0.45:0.0f) * (millis()-lastMillis)/1000.0f;
-        pos += 1 * (millis()-lastMillis)/1000.0f;
+        pos += 0.5 * (millis()-lastMillis)/1000.0f;
         Serial.print(pos);
         lastPos = pos;
         lastMillis = millis();
