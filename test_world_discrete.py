@@ -15,12 +15,12 @@ def get_true_obs(state):
     else:
         return 20
 
-def p_particle(state, sensor_reading):
+def p_particle(state, obs):
     """
     Weight using Gaussian kernel
     """
     variance = 20
-    return np.exp(-(get_true_obs(state) - sensor_reading) ** 2 / (2 * variance)) \
+    return np.exp(-(get_true_obs(state) - obs) ** 2 / (2 * variance)) \
         if 0 <= state < 100 else 0
 
 def next_particle(state, prop_param):

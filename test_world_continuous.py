@@ -8,12 +8,12 @@ from visualization import ParticleFilterVisualization
 def get_true_obs(state):
     return state * (50 - state) / 2 if state < 50 else (state - 50) * (100 - state)
 
-def p_particle(state, sensor_reading):
+def p_particle(state, obs):
     """
     Weight using Gaussian kernel
     """
     variance = 10
-    return np.exp(-(get_true_obs(state) - sensor_reading) ** 2 / (2 * variance)) \
+    return np.exp(-(get_true_obs(state) - obs) ** 2 / (2 * variance)) \
         if 0 < state < 100 else 0
 
 def next_particle(state, prop_param):
