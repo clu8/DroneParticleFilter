@@ -6,15 +6,25 @@ from scipy.stats import norm
 
 df = pd.read_csv('sensor_noise_log.txt')
 accels = []
+summ = 0
 for index,row in df.iterrows():
-    accels.append(row[1] if row[1] < 2 else 0)
+    # print row[0]
+    
+    # print float(row[0])/2
+    
+    if float(row[0]) > 23:
+        accels.append(float(row[0]))
+# print summ
 # print accels
+mu = np.average(accels)
+print mu
 (mu,sigma) = norm.fit(accels)
 print (mu, sigma)
-n,bins,patches = plt.hist(accels, 50, normed=1, facecolor='green', alpha=0.75)
+weights = np.ones_like(accels)/float(len(accels))
+n,bins,patches = plt.hist(accels, 50, weights = weights, facecolor='green', alpha=0.75)
 
-# y = mlab.normpdf( bins, mu, sigma)
-# l = plt.plot(bins, y, 'r--', linewidth=1)
+y = mlab.normpdf( bins, mu, sigma)
+l = plt.plot(bins, y, 'r--', linewidth=1)
 
 
 plt.show()

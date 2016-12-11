@@ -9,7 +9,7 @@ with open('longboard_map.txt') as f:
     environment = {i: float(line) for i, line in enumerate(f.readlines())
 
 def get_true_obs(state):
-    return environment[state]
+    return environment[state
 
 def p_particle(state, obs):
     """
