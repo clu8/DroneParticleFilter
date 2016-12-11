@@ -38,7 +38,7 @@ viz = ParticleFilterVisualization(plot_states, get_true_obs, pf.particles,
                                   y_particle=700, true_state=true_state)
 
 while True:
-    obs = np.random.normal(get_true_obs(true_state), 5)
+    obs = np.random.normal(get_true_obs(true_state), 10)
 
     print('True state: {}'.format(true_state))
     print('Particles: {}'.format(np.round(sorted(pf.particles), 2)))
