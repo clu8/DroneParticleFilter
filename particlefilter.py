@@ -3,7 +3,7 @@ import numpy as np
 class ParticleFilter(object):
     def __init__(self, p_particle, next_particle, initial_particles):
         """
-        p_particle: function where p_particle(state, sensor_reading)
+        p_particle: function where p_particle(state, obs)
             returns probability of particle
         next_particle: function where next_particle(state, prop_param)
             samples particle at next time step
@@ -13,12 +13,13 @@ class ParticleFilter(object):
         self.next_particle = np.vectorize(next_particle)
         self.particles = np.array(initial_particles)
 
-    def observe(self, sensor_reading, prop_param):
+    def observe(self, obs, prop_param):
         """
-        Observe a sensor reading, reweight and resample particles, and then propogate in time.
+        Using an observation (sensor reading), reweight and resample particles,
+        and then propogate in time.
         """
         # reweight
-        weights = self.p_particle(self.particles, sensor_reading)
+        weights = self.p_particle(self.particles, obs)
         weights /= sum(weights)
 
         # resample & propogate in time
