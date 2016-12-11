@@ -9,22 +9,22 @@ with open('longboard_map.txt') as f:
     environment = {i: float(line) for i, line in enumerate(f.readlines())
 
 def get_true_obs(state):
-    return environment[state
+    return environment[state]
 
 def p_particle(state, obs):
     """
     Weight using Gaussian kernel
     """
-    variance = 10
+    variance = 0.207**2
     return np.exp(-(get_true_obs(state) - obs) ** 2 / (2 * variance)) \
         if 0 < state < 100 else 0
 
 def next_particle(state, prop_param):
     """
     Sample new state from Gaussian around new expected location. 
-    prop_param: predicted change in state
+    prop_param: expected change in feet
     """
-    expected_state = state + prop_param
+    expected_state = state + prop_param * 4
     return np.random.normal(expected_state, abs(prop_param) ** 0.5)
 
 n_particles = int(input('Number of particles: '))
@@ -32,13 +32,12 @@ n_particles = int(input('Number of particles: '))
 pf = ParticleFilter(
     p_particle,
     next_particle,
-    100 * np.random.random(n_particles)
+    np.random.choice(66, size=n_particles)
 )
 
-plot_states = np.linspace(0, 100, 201)
-true_state = 10
-viz = ParticleFilterVisualization(plot_states, get_true_obs, pf.particles,
-                                  y_particle=700, true_state=true_state)
+all_states = list(range(66))
+viz = ParticleFilterVisualization(all_states, get_true_obs, pf.particles,
+                                  y_particle=700)
 
 while True:
     obs = np.random.normal(get_true_obs(true_state), 5)
