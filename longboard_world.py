@@ -57,7 +57,7 @@ with open('longboard_episode_2.csv') as csvfile:
             if row_idx % 2000 == 0: # take four snapshots of visualization
                 viz.savefig('plots/longboard_viz_realistic_{}.png'.format(int(row_idx / 2000 + 1)))
 
-            # input('Press [enter] to go to next time step')
+            input('Press [enter] to go to next time step')
 
             prop_param = pos - prev_pos
             print('Observation: {}'.format(obs))
